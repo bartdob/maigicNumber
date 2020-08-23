@@ -1,11 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
-  Text,
-  StatusBar,
 } from 'react-native';
 
 import {
@@ -17,12 +13,39 @@ import {
 
 import Header from './components/Header';
 import StartScreen from './screens/StartScreen';
+import GameScreen from './screens/GameScreen';
+import GameOver from './screens/GameOver';
 
 function App() {
+  const [userNumber, setUserNumber] = useState();
+  const [rounds, setRounds] = useState(0);
+
+  const newGameHandler = () => {
+    setRounds(0);
+    setUserNumber(null);
+  }
+
+  const startGameHandler = (selectedNumber) => {
+    setUserNumber(selectedNumber);
+    setRounds(0);
+  }
+
+  const gameOverHandler = numOfRounds => {
+    setRounds(numOfRounds);
+  }
+
+  let content = <StartScreen onStartGame={startGameHandler}/>;
+
+  if(userNumber && rounds <=0) {
+    content = <GameScreen userChoice={userNumber} onGameOver={gameOverHandler} />
+  } else if (rounds >0) {
+    content = <GameOver roundsNumber={rounds} userNumber={userNumber} onRestart={newGameHandler}/>
+  }
+
   return (
       <View style={styles.screen}>
         <Header title={"magicNumber"} />
-        <StartScreen />
+        {content}
       </View>
   );
 };
